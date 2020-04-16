@@ -1,0 +1,47 @@
+# Lord Robert the Archer
+9th level fighter
+Human male
+Lawful neutral
+
+HP 58
+
+STR 9
+DEX 17
+CON 11
+INT 9
+WIS 14
+CHA 9
+
+Lord Robert has an income of about 25,000 GP per month, and ten times that much in his treasury. He employs over a thousand men at arms. He fights with Banded Mail +1 and a Shield +3. 
+
+# Sir Kay the Fair
+8th level fighter
+Human male
+Lawful neutral
+
+HP 46
+
+STR 12
+DEX 10
+CON 9
+INT 11
+WIS 10
+CHA 18
+
+Lord Robert has many captains, but Sir Kay the Fair is the most beloved of them all. He fights with a Mace +3.
+
+# High Priest Ashley (a.k.a. "The Iron Priest")
+9th level cleric
+Human male
+Lawful good
+
+HP 58
+
+STR 14
+DEX 13
+CON 18
+INT 11
+WIS 14
+CHA 8
+
+Ashley is an old friend of Lord Robert's who currently runs a temple 160 miles distant from Lord Robert's castle. He fights in Scale Mail +1 with a Mace +1.
