@@ -1,3 +1,5 @@
+require './osric_support.rb'
+
 class Monster
   def initialize
     @max_hp = roll_hp
@@ -5,11 +7,7 @@ class Monster
   end
 
   def roll_hp
-    (1..hit_dice.first).map { rand(8) + 1 }.inject(:+) + hit_dice.last
-  end
-
-  def hit_dice
-    raise NotImplementedError
+    [OsricSupport.roll(self.class::HIT_DICE), 1].max
   end
 
   # TODO: Handle monsters with HD less than 1-1
@@ -36,12 +34,9 @@ end
 
 class Kobold < Monster
   ARMOR_CLASS = 7
+  HIT_DICE = '1d4'
 
-  # TODO: This entire implementation is hacky, if I had a lot of sub 1-1 HD monsters I should write up a more general solution.
-  def roll_hp
-    rand(4)+1
-  end
-
+  # Hacky, should be fixed when I implement more sub HD 1-1 monsters.
   def equivalent_level
     0
   end
@@ -49,56 +44,35 @@ end
 
 class Goblin < Monster
   ARMOR_CLASS = 6
-
-  def hit_dice
-    [1, -1]
-  end
+  HIT_DICE = '1-1'
 end
 
 class Orc < Monster
   ARMOR_CLASS = 6
-
-  def hit_dice
-    [1, 0]
-  end
+  HIT_DICE = '1'
 end
 
 class Hobgoblin < Monster
   ARMOR_CLASS = 5
-
-  def hit_dice
-    [1, 1]
-  end
+  HIT_DICE = '1+1'
 end
 
 class Gnoll < Monster
   ARMOR_CLASS = 5
-
-  def hit_dice
-    [2, 0]
-  end
+  HIT_DICE = '2'
 end
 
 class Bugbear < Monster
   ARMOR_CLASS = 5
-
-  def hit_dice
-    [3, 1]
-  end
+  HIT_DICE = '3+1'
 end
 
 class Ogre < Monster
   ARMOR_CLASS = 5
-
-  def hit_dice
-    [4, 1]
-  end
+  HIT_DICE = '4+1'
 end
 
 class Owlbear < Monster
   ARMOR_CLASS = 6
-
-  def hit_dice
-    [5, 1]
-  end
+  HIT_DICE = '5+1'
 end
