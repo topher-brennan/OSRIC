@@ -1,32 +1,42 @@
 require './osric_support.rb'
 
 class Monster
+  include OsricSupport
+
+  attr_accessor :hp
+
   def initialize
     @max_hp = roll_hp
     @hp = @max_hp
   end
 
   def roll_hp
-    [OsricSupport.roll(self.class::HIT_DICE), 1].max
+    [roll(self.class::HIT_DICE), 1].max
   end
 
   # TODO: Handle monsters with HD less than 1-1
   def equivalent_level
-    if hit_dice.last < 0
+    parsed_hd = parse_dice(self.class::HIT_DICE)
+ 
+    if parsed_hd[-2] == '-'
       return 1
     else
-      return hit_dice.first + 1 + (hit_dice.last > 0 ? 1 : 0)
+      return parsed_hd.first + 1 + (parsed_hd.size > 3 ? 1 : 0)
     end
   end
 
   def to_hit(armor_class)
-    result = 21 - armor_class - [equivqlent_level, 20].min
+    result = 21 - armor_class - [equivalent_level, 20].min
     result -= 5 if result > 20
     result
   end
 
+  def roll_damage
+    roll(self.class::DAMAGE)
+  end
+
   def armor_class
-    self::ARMOR_CLASS
+    self.class::ARMOR_CLASS
   end
 end
 
@@ -35,8 +45,9 @@ end
 class Kobold < Monster
   ARMOR_CLASS = 7
   HIT_DICE = '1d4'
+  DAMAGE = '1d4'
 
-  # Hacky, should be fixed when I implement more sub HD 1-1 monsters.
+  # TODO: Hacky, should be fixed when I implement more sub HD 1-1 monsters.
   def equivalent_level
     0
   end
@@ -45,34 +56,42 @@ end
 class Goblin < Monster
   ARMOR_CLASS = 6
   HIT_DICE = '1-1'
+  DAMAGE = '1d6'
 end
 
 class Orc < Monster
   ARMOR_CLASS = 6
   HIT_DICE = '1'
+  DAMAGE = '1d8'
 end
 
 class Hobgoblin < Monster
   ARMOR_CLASS = 5
   HIT_DICE = '1+1'
+  DAMAGE = '1d8'
 end
 
 class Gnoll < Monster
   ARMOR_CLASS = 5
   HIT_DICE = '2'
+  DAMAGE = '2d4'
 end
 
 class Bugbear < Monster
   ARMOR_CLASS = 5
   HIT_DICE = '3+1'
+  DAMGE = '2d4'
 end
 
 class Ogre < Monster
   ARMOR_CLASS = 5
   HIT_DICE = '4+1'
+  DAMAGE = '1d10'
 end
 
-class Owlbear < Monster
-  ARMOR_CLASS = 6
-  HIT_DICE = '5+1'
-end
+# TODO: Rethink how multiple attacks are represented
+# class Owlbear < Monster
+#  ARMOR_CLASS = 6
+#  HIT_DICE = '5+1'
+#  DAMAGE = ['1d6', '1d6', '1d4']
+#end
