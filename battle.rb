@@ -38,11 +38,19 @@ class Battle
 end
 
 if $PROGRAM_NAME == __FILE__
-  wins = 0
-  1_000.times do
-    if Battle.new(Fighter.new, Hobgoblin.new).player_character_wins?
-      wins += 1
+  pc = Fighter.new
+  alive = true
+
+  while pc.xp < 1_900 && alive
+    pc.full_heal
+    monster = Kobold.new
+
+    if Battle.new(pc, monster).player_character_wins?
+      pc.xp += monster.xp_reward
+    else
+      alive = false
     end
   end
-  puts wins 
+  puts "Sir Bob acquired #{pc.xp} experience points before #{alive ? 'reaching 2nd level' : 'dying'}" 
+  puts "Sir Bob's stats: #{pc.ability_score_block}"
 end

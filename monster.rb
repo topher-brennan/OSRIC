@@ -51,6 +51,10 @@ class Kobold < Monster
   def equivalent_level
     0
   end
+
+  def xp_reward
+    5 + @hp
+  end
 end
 
 class Goblin < Monster
