@@ -1,3 +1,4 @@
+require './osric_gem.rb'
 require './osric_support.rb'
 
 class Monster
@@ -53,7 +54,14 @@ class Kobold < Monster
   end
 
   def xp_reward
-    5 + @hp
+    result = 5 + @max_hp
+    # Copper
+    result += 1 if rand(8) == 0
+    # Silver
+    result += [2, 5, 7].sample if rand(10) < 3
+    # Gems. Note statistically 1 in 320 Kobolds has a gem but I'm assuming risk and reward is polled over 4 party members
+    result += OsricGem.new.xp_reward / 4 if rand(80) == 0
+    result
   end
 end
 
