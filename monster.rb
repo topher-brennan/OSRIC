@@ -1,5 +1,7 @@
+require './jewellery.rb'
 require './osric_gem.rb'
 require './osric_support.rb'
+require './potion.rb'
 
 class Monster
   include OsricSupport
@@ -55,11 +57,9 @@ class Kobold < Monster
 
   def xp_reward
     result = 5 + @max_hp
-    # Copper
-    result += 1 if rand(8) == 0
     # Silver
     result += [2, 5, 7].sample if rand(10) < 3
-    # Gems. Note statistically 1 in 320 Kobolds has a gem but I'm assuming risk and reward is polled over 4 party members
+    # Gems. Note statistically 1 in 320 kobolds has a gem but I'm assuming risk and reward is polled over 4 party members
     result += OsricGem.new.xp_reward / 4 if rand(80) == 0
     result
   end
@@ -69,6 +69,19 @@ class Goblin < Monster
   ARMOR_CLASS = 6
   HIT_DICE = '1-1'
   DAMAGE = '1d6'
+
+  def xp_reward
+    result = 10 + @max_hp
+    # Individual silver
+    result += roll('3d6') / 10
+    # Share of lair silver
+    result += roll('1d6') * 25 / 10 if rand(1) == 0
+    # Gems and Jewellery. A similar note to risk and reward pooling for kobolds applies here.
+    result += OsricGem.new.xp_reward / 4 if rand < 0.00875
+    result += Jewellery.new.xp_reward / 4 if rand(250) == 0
+    result += Potion.new.xp_reward if rand(200) == 0
+    result
+  end
 end
 
 class Orc < Monster
@@ -106,4 +119,4 @@ end
 #  ARMOR_CLASS = 6
 #  HIT_DICE = '5+1'
 #  DAMAGE = ['1d6', '1d6', '1d4']
-#end
+# end
