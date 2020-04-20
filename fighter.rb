@@ -30,6 +30,15 @@ class Fighter
     @strength, @dexterity, @constitution, @intelligence, @wisdom, @charisma = Array.new(6) { roll('3d6') }
   end
 
+  def level_up_if_necessary
+    level_up if @level < 2 && @xp >= 1_900
+    level_up if @level < 3 && @xp >= 4_250
+    level_up if @level < 4 && @xp >= 7_750
+    level_up if @level < 5 && @xp >= 16_000
+    level_up if @level < 6 && @xp >= 35_000
+    level_up if @level < 7 && @xp >= 75_000
+  end
+
   def level_up
     @level += 1
     @max_hp += roll_hp

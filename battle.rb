@@ -42,6 +42,7 @@ class Battle
       end
     end
 
+    assign_rewards if @player_character.hp > 0
     @player_character.hp > 0
   end
 
@@ -49,5 +50,14 @@ class Battle
     if roll('1d20') >= attacker.to_hit(target.armor_class)
       target.hp -= attacker.roll_damage
     end
+  end
+
+  def assign_rewards
+    reward = @monster.xp_reward
+    if @player_character.strength > 15
+      reward *= 11
+      reward /= 10
+    end
+    @player_character.xp += reward  
   end
 end

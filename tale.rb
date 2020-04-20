@@ -3,62 +3,47 @@ require './fighter.rb'
 require './monster.rb'
 
 class Tale
-  def initialize(pc)
-    @pc = pc
+  def initialize(player_character)
+    @player_character = player_character
     @alive = true
-    @wins = 0
   end
 
   def tell
-    while @pc.xp < 1_900 && @alive
-      @pc.full_heal
-      monster = Kobold.new
+    while @player_character.xp < 1_900 && @alive
+      @player_character.full_heal
+      monster = Monster.for_level(@player_character.level)
 
-      if Battle.new(@pc, monster).player_character_wins?
-        @wins += 1
-	reward = monster.xp_reward
-        if @pc.strength > 15
-	  reward *= 11
-	  reward /= 10
-        end
-        @pc.xp += reward
-      else
+      unless Battle.new(@player_character, monster).player_character_wins?
         @alive = false
       end
     end
 
-    @pc.level_up if @alive
+    @player_character.level_up if @alive
 
-    while @pc.xp < 4250 && @alive
-      @pc.full_heal
-      monster = Goblin.new
+    while @player_character.xp < 4250 && @alive
+      @player_character.full_heal
+      monster = Monster.for_level(@player_character.level)
 
-      if Battle.new(@pc, monster).player_character_wins?
-        @wins += 1
-        reward = monster.xp_reward
-        if @pc.strength > 15
-          reward *= 11
-          reward /= 10
-        end
-        @pc.xp += reward
-      else
+      unless Battle.new(@player_character, monster).player_character_wins?
         @alive = false
       end
     end
 
-    @pc.level_up if @alive
+    @player_character.level_up if @alive
 
-    # puts "Sir Bob acquired #{@pc.xp} experience points before #{@alive ? 'reaching 3rd level' : 'dying'}"
-    # puts "Sir Bob's stats: #{@pc.stat_block}"
+    # puts "Sir Bob acquired #{@player_character.xp} experience points before #{@alive ? 'reaching 3rd level' : 'dying'}"
+    # puts "Sir Bob's stats: #{@player_character.stat_block}"
   end
 end
 
 if $PROGRAM_NAME == __FILE__
+  TRIALS = 250
+
   results = Array.new(4) { 0 }
-  100_000.times do
+  TRIALS.times do
     pc = Fighter.new
     Tale.new(pc).tell
     results[pc.level] += 1
   end
-  puts results
+  puts results.map { |r| r.to_f / TRIALS }
 end

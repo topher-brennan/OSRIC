@@ -8,6 +8,25 @@ class Monster
 
   attr_accessor :hp
 
+  def self.for_level(level)
+    case level
+    when 1
+      return Kobold.new
+    when 2
+      return Goblin.new
+    when 3
+      return Orc.new
+    when 4
+      return Hobgoblin.new
+    when 4
+      return Gnoll.new
+    when 5
+      return Bugbear.new
+    else
+      return Ogre.new
+    end
+  end
+
   def initialize
     @max_hp = roll_hp
     @hp = @max_hp
