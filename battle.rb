@@ -11,19 +11,34 @@ class Battle
   end
 
   def player_character_wins?
-    pc_initiative = roll('1d6')
-    monster_initiative = roll('1d6')
+    # This assumes a fighter against a monster with only one attack.
+    if @player_character.level == 0
+      pc_initiative = roll('1d6')
+      monster_initiative = roll('1d6')
    
-    # Ties effectively go to the monster, because if the PC dies we don't care if the monster does too.
-    if pc_initiative > monster_initiative
-      resolve_attack(@player_character, @monster)
-    end
-
-    while @player_character.hp > 0 && @monster.hp > 0
-      resolve_attack(@monster, @player_character)
-
-      if @player_character.hp > 0
+      # Ties effectively go to the monster, because if the PC dies we don't care if the monster does too.
+      if pc_initiative > monster_initiative
         resolve_attack(@player_character, @monster)
+      end
+
+      while @player_character.hp > 0 && @monster.hp > 0
+        resolve_attack(@monster, @player_character)
+
+        if @player_character.hp > 0
+          resolve_attack(@player_character, @monster)
+        end
+      end
+    else
+      while @player_character.hp > 0 && @monster.hp > 0
+        resolve_attack(@player_character, @monster)
+
+        if @monster.hp > 0
+          resolve_attack(@monster, @player_character)
+        end
+
+	(@player_character.level - 1).times do
+	  resolve_attack(@player_character, @monster)
+	end
       end
     end
 

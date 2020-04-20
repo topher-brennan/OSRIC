@@ -3,7 +3,7 @@ require './osric_support'
 class Fighter
   include OsricSupport
 
-  attr_accessor :hp, :xp, :strength
+  attr_accessor :level, :hp, :xp, :strength
 
   # Shield and banded armour
   ARMOR_CLASS = 3
@@ -17,18 +17,29 @@ class Fighter
     @level = 1
     @xp = 0
 
-    @max_hp = roll('1d10')
-    @max_hp += (@constitution - 14) if @constitution > 14
+    @max_hp = roll_hp
     @hp = @max_hp  
   end
 
-  def ability_score_block
-    "STR #{@strength} DEX #{@dexterity} CON #{@constitution} INT #{@intelligence} WIS #{@wisdom} CHA #{@charisma}"
+  def stat_block
+    "STR #{@strength} DEX #{@dexterity} CON #{@constitution} INT #{@intelligence} WIS #{@wisdom} CHA #{@charisma} HP #{@max_hp}"
   end
 
   # TODO: Decimal strength
   def roll_ability_scores
     @strength, @dexterity, @constitution, @intelligence, @wisdom, @charisma = Array.new(6) { roll('3d6') }
+  end
+
+  def level_up
+    @level += 1
+    @max_hp += roll_hp
+    # TODO: Should also heal?
+  end
+
+  def roll_hp
+    result = roll('1d10')
+    result += (@constitution - 14) if @constitution > 14
+    result
   end
 
   # TODO: DRY out this and the corresponding function in Monster
