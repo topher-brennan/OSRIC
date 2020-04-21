@@ -3,7 +3,9 @@ require './osric_support'
 class Fighter
   include OsricSupport
 
-  attr_accessor :level, :hp, :xp, :strength
+  attr_accessor :level, :hp, :xp
+  attr_accessor :strength, :dexterity, :constitution
+  attr_accessor :intelligence, :wisdom, :charisma
 
   # Shield and banded armour
   ARMOR_CLASS = 3
@@ -74,10 +76,11 @@ class Fighter
   end
 
   def armor_class
-  # TODO: calculate this based on gold?
     result = self.class::ARMOR_CLASS
     result += (7 - @dexterity) if @dexterity < 7
     result += (14 - @dexterity) if @dexterity > 14
+    # Assume fighters buy better armor after leveling the first time
+    result += 1 if @level > 1
     result
   end
 

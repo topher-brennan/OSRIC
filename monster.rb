@@ -18,12 +18,10 @@ class Monster
       return Orc.new
     when 4
       return Hobgoblin.new
-    when 4
-      return Gnoll.new
     when 5
-      return Bugbear.new
+      return Gnoll.new
     else
-      return Ogre.new
+      return Bugbear.new
     end
   end
 
@@ -94,7 +92,7 @@ class Goblin < Monster
     # Individual silver
     result += roll('3d6') / 10
     # Share of lair silver
-    result += roll('1d6') * 25 / 10 if rand(1) == 0
+    result += roll('1d6') / 4 if rand(1) == 0
     # Gems and Jewellery. A similar note to risk and reward pooling for kobolds applies here.
     result += OsricGem.new.xp_reward / 4 if rand < 0.00875
     result += Jewellery.new.xp_reward / 4 if rand(250) == 0
@@ -107,20 +105,67 @@ class Orc < Monster
   ARMOR_CLASS = 6
   HIT_DICE = '1'
   DAMAGE = '1d8'
+
+  def xp_reward
+    result = 10 + @max_hp
+    # Individual electrum
+    result += roll('2d6') / 2
+    # Share of lair silver
+    result += roll('1d6') / 3 if rand(10) < 4
+    result += OsricGem.new.xp_reward / 4 if rand < (0.035 / 3)
+    result += Jewellery.new.xp_reward / 4 if rand(375) < 2
+    result += Potion.new.xp_reward if rand(150) == 0
+    result
+  end
 end
 
 class Hobgoblin < Monster
   ARMOR_CLASS = 5
   HIT_DICE = '1+1'
   DAMAGE = '1d8'
+
+  def xp_reward
+    result = 20 + 2 * @max_hp
+    # Individual gold
+    result += roll('2d8')
+    # Share of lair silver
+    result += roll('1d12') / 2 if rand < 0.6
+    # Share of lair electrum
+    result += roll('1d8') * 5 / 2 if rand < 0.35
+    # Share of lair gold
+    result += roll('1d6') * 5 if rand < 0.5
+    result += OsricGem.new.xp_reward / 4 if rand < 0.125
+    result += Jewellery.new.xp_reward / 4 if rand < 0.0175
+    result += Potion.new.xp_reward if rand < 0.00075
+    result
+  end
 end
 
 class Gnoll < Monster
   ARMOR_CLASS = 5
   HIT_DICE = '2'
   DAMAGE = '2d4'
+
+  def xp_reward
+    result = 30 + 2 * @max_hp
+    # Individual electrum
+    result += roll('2d6') / 2
+    # Individual gold
+    result += roll('2d4')
+    # Share of lair silver
+    result += roll('1d6') / 2 if rand < 0.5
+    # Share of lair electrum
+    result += roll('1d8') * 5 / 2 if rand < 0.35
+    # Share of lair gold
+    result += roll('1d6') * 5 if rand < 0.5
+    result += OsricGem.new.xp_reward / 4 if rand < 0.075
+    result += Jewellery.new.xp_reward / 4 if rand < 0.0175
+    result += Potion.new.xp_reward if rand < 0.01
+    result
+  end
 end
 
+# TODO: implement surprise, so Bugbears can surprise 50% of the time
 class Bugbear < Monster
   ARMOR_CLASS = 5
   HIT_DICE = '3+1'
